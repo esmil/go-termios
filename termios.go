@@ -190,10 +190,10 @@ const (
 	TCSETS = 0x5402
 )
 
-func Get(fd int, dst *Termios) os.Error {
+func (t *Termios) Get(fd int) os.Error {
 	r1, _, errno := syscall.Syscall(syscall.SYS_IOCTL,
 		uintptr(fd), uintptr(TCGETS),
-		uintptr(unsafe.Pointer(dst)))
+		uintptr(unsafe.Pointer(t)))
 
 	if err := os.NewSyscallError("SYS_IOCTL", int(errno)); err != nil {
 		return err
@@ -206,10 +206,10 @@ func Get(fd int, dst *Termios) os.Error {
 	return nil
 }
 
-func Set(fd int, src *Termios) os.Error {
+func (t *Termios) Set(fd int) os.Error {
 	r1, _, errno := syscall.Syscall(syscall.SYS_IOCTL,
 		uintptr(fd), uintptr(TCSETS),
-		uintptr(unsafe.Pointer(src)))
+		uintptr(unsafe.Pointer(t)))
 
 	if err := os.NewSyscallError("SYS_IOCTL", int(errno)); err != nil {
 		return err
