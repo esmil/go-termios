@@ -22,169 +22,166 @@ import (
 	"unsafe"
 )
 
-// termios types as defined in bits/termios.h
-type CC_t byte
-type Speed_t uint
-type TCFlag_t uint
-
+// termios struct as defined in bits/termios.h
 const NCCS = 32
 
 type Termios struct {
-	C_iflag  TCFlag_t
-	C_oflag  TCFlag_t
-	C_cflag  TCFlag_t
-	C_lflag  TCFlag_t
-	C_line   CC_t
-	C_cc     [NCCS]CC_t
-	C_ispeed Speed_t
-	C_ospeed Speed_t
+	IFlag  uint
+	OFlag  uint
+	CFlag  uint
+	LFlag  uint
+	Line   byte
+	CC     [NCCS]byte
+	ISpeed uint
+	OSpeed uint
 }
 
 // c_cc control characters
 const (
-	VINTR    = 0
-	VQUIT    = 1
-	VERASE   = 2
-	VKILL    = 3
-	VEOF     = 4
-	VTIME    = 5
-	VMIN     = 6
-	VSWTC    = 7
-	VSTART   = 8
-	VSTOP    = 9
-	VSUSP    = 10
-	VEOL     = 11
-	VREPRINT = 12
-	VDISCARD = 13
-	VWERASE  = 14
-	VLNEXT   = 15
-	VEOL2    = 16
+	VINTR = iota
+	VQUIT
+	VERASE
+	VKILL
+	VEOF
+	VTIME
+	VMIN
+	VSWTC
+	VSTART
+	VSTOP
+	VSUSP
+	VEOL
+	VREPRINT
+	VDISCARD
+	VWERASE
+	VLNEXT
+	VEOL2
 )
 
 // c_iflag constants
 const (
-	IGNBRK  = TCFlag_t(0000001)
-	BRKINT  = TCFlag_t(0000002)
-	IGNPAR  = TCFlag_t(0000004)
-	PARMRK  = TCFlag_t(0000010)
-	INPCK   = TCFlag_t(0000020)
-	ISTRIP  = TCFlag_t(0000040)
-	INLCR   = TCFlag_t(0000100)
-	IGNCR   = TCFlag_t(0000200)
-	ICRNL   = TCFlag_t(0000400)
-	IUCLC   = TCFlag_t(0001000)
-	IXON    = TCFlag_t(0002000)
-	IXANY   = TCFlag_t(0004000)
-	IXOFF   = TCFlag_t(0010000)
-	IMAXBEL = TCFlag_t(0020000)
-	IUTF8   = TCFlag_t(0040000)
+	IGNBRK  = 0000001
+	BRKINT  = 0000002
+	IGNPAR  = 0000004
+	PARMRK  = 0000010
+	INPCK   = 0000020
+	ISTRIP  = 0000040
+	INLCR   = 0000100
+	IGNCR   = 0000200
+	ICRNL   = 0000400
+	IUCLC   = 0001000
+	IXON    = 0002000
+	IXANY   = 0004000
+	IXOFF   = 0010000
+	IMAXBEL = 0020000
+	IUTF8   = 0040000
 )
 
 // c_oflag constants
 const (
-	OPOST  = TCFlag_t(0000001)
-	OLCUC  = TCFlag_t(0000002)
-	ONLCR  = TCFlag_t(0000004)
-	OCRNL  = TCFlag_t(0000010)
-	ONOCR  = TCFlag_t(0000020)
-	ONLRET = TCFlag_t(0000040)
-	OFILL  = TCFlag_t(0000100)
-	OFDEL  = TCFlag_t(0000200)
-	NLDLY  = TCFlag_t(0000400)
-	NL0    = TCFlag_t(0000000)
-	NL1    = TCFlag_t(0000400)
-	CRDLY  = TCFlag_t(0003000)
-	CR0    = TCFlag_t(0000000)
-	CR1    = TCFlag_t(0001000)
-	CR2    = TCFlag_t(0002000)
-	CR3    = TCFlag_t(0003000)
-	TABDLY = TCFlag_t(0014000)
-	TAB0   = TCFlag_t(0000000)
-	TAB1   = TCFlag_t(0004000)
-	TAB2   = TCFlag_t(0010000)
-	TAB3   = TCFlag_t(0014000)
-	XTABS  = TCFlag_t(0014000)
-	BSDLY  = TCFlag_t(0020000)
-	BS0    = TCFlag_t(0000000)
-	BS1    = TCFlag_t(0020000)
-	FFDLY  = TCFlag_t(0100000)
-	FF0    = TCFlag_t(0000000)
-	FF1    = TCFlag_t(0100000)
-	VTDLY  = TCFlag_t(0040000)
-	VT0    = TCFlag_t(0000000)
-	VT1    = TCFlag_t(0040000)
+	OPOST  = 0000001
+	OLCUC  = 0000002
+	ONLCR  = 0000004
+	OCRNL  = 0000010
+	ONOCR  = 0000020
+	ONLRET = 0000040
+	OFILL  = 0000100
+	OFDEL  = 0000200
+	NLDLY  = 0000400
+	NL0    = 0000000
+	NL1    = 0000400
+	CRDLY  = 0003000
+	CR0    = 0000000
+	CR1    = 0001000
+	CR2    = 0002000
+	CR3    = 0003000
+	TABDLY = 0014000
+	TAB0   = 0000000
+	TAB1   = 0004000
+	TAB2   = 0010000
+	TAB3   = 0014000
+	XTABS  = 0014000
+	BSDLY  = 0020000
+	BS0    = 0000000
+	BS1    = 0020000
+	FFDLY  = 0100000
+	FF0    = 0000000
+	FF1    = 0100000
+	VTDLY  = 0040000
+	VT0    = 0000000
+	VT1    = 0040000
 )
 
 // c_cflag constants
 const (
-	CBAUD      = TCFlag_t(0010017)
-	B0         = TCFlag_t(0000000)
-	B50        = TCFlag_t(0000001)
-	B75        = TCFlag_t(0000002)
-	B110       = TCFlag_t(0000003)
-	B134       = TCFlag_t(0000004)
-	B150       = TCFlag_t(0000005)
-	B200       = TCFlag_t(0000006)
-	B300       = TCFlag_t(0000007)
-	B600       = TCFlag_t(0000010)
-	B1200      = TCFlag_t(0000011)
-	B1800      = TCFlag_t(0000012)
-	B2400      = TCFlag_t(0000013)
-	B4800      = TCFlag_t(0000014)
-	B9600      = TCFlag_t(0000015)
-	B19200     = TCFlag_t(0000016)
-	B38400     = TCFlag_t(0000017)
+	CBAUD      = 0010017
+	B0         = 0000000
+	B50        = 0000001
+	B75        = 0000002
+	B110       = 0000003
+	B134       = 0000004
+	B150       = 0000005
+	B200       = 0000006
+	B300       = 0000007
+	B600       = 0000010
+	B1200      = 0000011
+	B1800      = 0000012
+	B2400      = 0000013
+	B4800      = 0000014
+	B9600      = 0000015
+	B19200     = 0000016
+	B38400     = 0000017
 	EXTA       = B19200
 	EXTB       = B38400
-	CSIZE      = TCFlag_t(0000060)
-	CS5        = TCFlag_t(0000000)
-	CS6        = TCFlag_t(0000020)
-	CS7        = TCFlag_t(0000040)
-	CS8        = TCFlag_t(0000060)
-	CSTOPB     = TCFlag_t(0000100)
-	CREAD      = TCFlag_t(0000200)
-	PARENB     = TCFlag_t(0000400)
-	PARODD     = TCFlag_t(0001000)
-	HUPCL      = TCFlag_t(0002000)
-	CLOCAL     = TCFlag_t(0004000)
-	CBAUDEX    = TCFlag_t(0010000)
-	B57600     = TCFlag_t(0010001)
-	B115200    = TCFlag_t(0010002)
-	B230400    = TCFlag_t(0010003)
-	B460800    = TCFlag_t(0010004)
-	B500000    = TCFlag_t(0010005)
-	B576000    = TCFlag_t(0010006)
-	B921600    = TCFlag_t(0010007)
-	B1000000   = TCFlag_t(0010010)
-	B1152000   = TCFlag_t(0010011)
-	B1500000   = TCFlag_t(0010012)
-	B2000000   = TCFlag_t(0010013)
-	B2500000   = TCFlag_t(0010014)
-	B3000000   = TCFlag_t(0010015)
-	B3500000   = TCFlag_t(0010016)
-	B4000000   = TCFlag_t(0010017)
+	CSIZE      = 0000060
+	CS5        = 0000000
+	CS6        = 0000020
+	CS7        = 0000040
+	CS8        = 0000060
+	CSTOPB     = 0000100
+	CREAD      = 0000200
+	PARENB     = 0000400
+	PARODD     = 0001000
+	HUPCL      = 0002000
+	CLOCAL     = 0004000
+	CBAUDEX    = 0010000
+	B57600     = 0010001
+	B115200    = 0010002
+	B230400    = 0010003
+	B460800    = 0010004
+	B500000    = 0010005
+	B576000    = 0010006
+	B921600    = 0010007
+	B1000000   = 0010010
+	B1152000   = 0010011
+	B1500000   = 0010012
+	B2000000   = 0010013
+	B2500000   = 0010014
+	B3000000   = 0010015
+	B3500000   = 0010016
+	B4000000   = 0010017
 	__MAX_BAUD = B4000000
-	CIBAUD     = TCFlag_t(002003600000)
-	CMSPAR     = TCFlag_t(010000000000)
-	CRTSCTS    = TCFlag_t(020000000000)
+	CIBAUD     = 002003600000
+	CMSPAR     = 010000000000
+	CRTSCTS    = 020000000000
 )
+
 // c_lflag constants
 const (
-	ISIG    = TCFlag_t(0000001)
-	ICANON  = TCFlag_t(0000002)
-	XCASE   = TCFlag_t(0000004)
-	ECHO    = TCFlag_t(0000010)
-	ECHOE   = TCFlag_t(0000020)
-	ECHOK   = TCFlag_t(0000040)
-	ECHONL  = TCFlag_t(0000100)
-	NOFLSH  = TCFlag_t(0000200)
-	TOSTOP  = TCFlag_t(0000400)
-	ECHOCTL = TCFlag_t(0001000)
-	ECHOPRT = TCFlag_t(0002000)
-	ECHOKE  = TCFlag_t(0004000)
-	FLUSHO  = TCFlag_t(0010000)
-	PENDIN  = TCFlag_t(0040000)
-	IEXTEN  = TCFlag_t(0100000)
+	ISIG    = 0000001
+	ICANON  = 0000002
+	XCASE   = 0000004
+	ECHO    = 0000010
+	ECHOE   = 0000020
+	ECHOK   = 0000040
+	ECHONL  = 0000100
+	NOFLSH  = 0000200
+	TOSTOP  = 0000400
+	ECHOCTL = 0001000
+	ECHOPRT = 0002000
+	ECHOKE  = 0004000
+	FLUSHO  = 0010000
+	PENDIN  = 0040000
+	IEXTEN  = 0100000
 )
 
 // ioctl constants
