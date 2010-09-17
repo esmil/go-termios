@@ -36,7 +36,7 @@ type Termios struct {
 	OSpeed uint
 }
 
-// c_cc control characters
+// control characters
 const (
 	VINTR = iota
 	VQUIT
@@ -57,7 +57,7 @@ const (
 	VEOL2
 )
 
-// c_iflag constants
+// input flag constants
 const (
 	IGNBRK  = 0000001
 	BRKINT  = 0000002
@@ -76,7 +76,7 @@ const (
 	IUTF8   = 0040000
 )
 
-// c_oflag constants
+// output flag constants
 const (
 	OPOST  = 0000001
 	OLCUC  = 0000002
@@ -111,7 +111,7 @@ const (
 	VT1    = 0040000
 )
 
-// c_cflag constants
+// control flag constants
 const (
 	CBAUD      = 0010017
 	B0         = 0000000
@@ -165,7 +165,7 @@ const (
 	CRTSCTS    = 020000000000
 )
 
-// c_lflag constants
+// local flag constants
 const (
 	ISIG    = 0000001
 	ICANON  = 0000002
